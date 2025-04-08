@@ -16,7 +16,16 @@ const countries = [
   { name: "South Africa", code: "+27" },
 ];
 
-const roomTypes = ["Single Room", "Double Room", "Suite", "Deluxe Room", "Family Room"];
+const roomTypes = [
+  "2 Bed Non-AC Room",
+  "2 Bed AC Room",
+  "3 Bed Non-AC Room",
+  "3 Bed AC Room",
+  "4 Bed Non-AC Room",
+  "4 Bed AC Room",
+  "5 Bed Non-AC Room",
+  "5 Bed AC Room"
+];
 const paymentMethods = ["Credit Card", "Debit Card", "UPI", "Net Banking", "Cash", "PayPal"];
 const bookingViaOptions = ["Direct", "Phone", "Booking.com", "Agoda"];
 
@@ -50,25 +59,41 @@ const BookingForm = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-
+  
+    // Hotel Name
     doc.setFontSize(20);
     doc.setTextColor(40, 60, 100);
     doc.text("Sampath Residency", 14, 20);
-
+  
+    // Hotel Address & Contact
     doc.setFontSize(11);
     doc.setTextColor(80, 80, 80);
     doc.text("201 Pattali Street, Idumban Kovil Itteri Rd,", 14, 28);
     doc.text("Opp. Eswarapatta Kovil, South Anna Nagar,", 14, 34);
     doc.text("Palani, Tamil Nadu 624601", 14, 40);
     doc.text("Phone: +91 98945 74934", 14, 46);
-
+  
+    // 📅 Add Today's Date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Date: ${formattedDate}`, 160, 46); // aligned right-top corner
+  
+    // Divider
     doc.setDrawColor(150);
     doc.line(14, 50, 200, 50);
-
+  
+    // Title
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
-    doc.text("Payment receipt for Advance Booking", 14, 60);
-
+    doc.text("Hotel Booking Confirmation", 14, 60);
+  
+    // Booking details table
     autoTable(doc, {
       startY: 70,
       head: [["Field", "Value"]],
@@ -85,9 +110,27 @@ const BookingForm = () => {
         ["Transaction ID", formData.transactionId],
       ],
     });
-
+  
+    // 📝 Notes Section
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Important Notes:", 14, doc.lastAutoTable.finalY + 10);
+  
+    const notes = [
+      "• Advance payment is non-refundable under any circumstances.",
+      "• Please carry a valid government-issued ID during check-in.",
+      "• Early check-in or late check-out is subject to availability.",
+      "• Guests are responsible for their belongings.",
+      "• Management reserves the right to admission.",
+    ];
+  
+    notes.forEach((note, i) => {
+      doc.text(note, 18, doc.lastAutoTable.finalY + 20 + i * 7);
+    });
+  
     doc.save("booking-confirmation.pdf");
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
