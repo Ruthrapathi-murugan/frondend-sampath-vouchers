@@ -109,6 +109,8 @@ const BookingForm = () => {
   };
 
   return (
+    <>
+    <h1>Hotel Sampath Residency-Palani</h1>
     <div className="container mt-5">
       <div className="card shadow-lg">
         <div className="card-header bg-primary text-white text-center">
@@ -268,6 +270,7 @@ const BookingForm = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
